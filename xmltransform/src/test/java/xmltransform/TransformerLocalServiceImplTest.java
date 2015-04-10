@@ -1,6 +1,7 @@
 package xmltransform;
 
 import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,7 +20,7 @@ public class TransformerLocalServiceImplTest {
     @BeforeClass
     public static void setUp() throws Exception {
         XMLUnitUtil.setupXMLUnit();
-
+        XMLUnit.setIgnoreWhitespace(true);
     }
 
     @Test
@@ -50,6 +51,19 @@ public class TransformerLocalServiceImplTest {
         String myTestXML = "<struct><boolean>false</boolean><int>3</int></struct>";
         XMLAssert.assertXMLEqual("comparing test xml to control xml", myControlXML, myTestXML);
 
+    }
+    
+    
+    @Test
+    public void testTransformInput2() throws Exception {
+    	String inputString = readFile(this.getClass().getResource("/test2/input.xml").toURI());
+        String expectedOutput = readFile(this.getClass().getResource("/test2/output.xml").toURI());
+        InputStream transformer = new ByteArrayInputStream(readFile(this.getClass().getResource("/test2/transformation.xslt").toURI()).getBytes(StandardCharsets.UTF_8));
+        String outputString = transformerService.transformInput(inputString, transformer );
+        System.out.println(outputString);
+
+        XMLAssert.assertXMLEqual(expectedOutput, outputString);   	
+    	
     }
 
 }
